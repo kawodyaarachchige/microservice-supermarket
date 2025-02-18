@@ -16,27 +16,29 @@ router.get('/inventory', (req, res) => {
 // Application context (node doesnt have application context like spring boot,but link to eureka server need to crete application context)
 app.use('/inventory-service', router);
 
-// create eureka client
+// Eureka Client Configuration
 const eurekaClient = new Eureka({
-    instance:{
-        instanceId:'inventory-service',
-        app:'inventory-service',
-        hostName: 'localhost',
-        inAddr : '127.0.0.1',
+    instance: {
+        instanceId: "inventory-service",
+        app: "INVENTORY-SERVICE",
+        hostName: "localhost",
+        ipAddr: "127.0.0.1",
         port: {
-            '$': port,
-            '@enabled': 'true'
+            $: port,   // Ensure it matches app's running port
+            "@enabled": true,
         },
+        vipAddress: "inventory-service",
         dataCenterInfo: {
-            name: 'MyOwn'
-        }
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            name: "MyOwn",
+        },
     },
     eureka: {
-        host: 'localhost',
+        host: "localhost",
         port: 8761,
-        servicePath: "/eureka/"
-    }
-})
+        servicePath: "/eureka/apps/",  // Corrected service path
+    },
+});
 
 app.listen(port,()=>{
     console.log(`Inventory service running at port : ${port}`)
